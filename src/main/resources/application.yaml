@@ -6,4 +6,15 @@ server:
 
 spring:
   application:
-    name: Message logging service
+    name: Logging service
+  datasource:
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+    url: jdbc:h2:mem:test;mode=Oracle
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
