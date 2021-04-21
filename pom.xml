@@ -48,6 +48,10 @@
       <version>${swagger.version}</version>
     </dependency>
     <!-- /Swagger -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
