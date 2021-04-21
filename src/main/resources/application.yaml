@@ -1,0 +1,9 @@
+server:
+  servlet:
+    context-path: /message-logging-service
+  error:
+    include-message: always
+
+spring:
+  application:
+    name: Message logging service
