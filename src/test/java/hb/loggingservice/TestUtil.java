@@ -9,6 +9,8 @@ import hb.loggingservice.model.MessageRequestModel;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @UtilityClass
@@ -46,5 +48,29 @@ public class TestUtil {
             .value(value)
             .timestamp(LocalDateTime.now())
             .build();
+    }
+
+    public Log createMockLogWithFourMessages() {
+        LocalDateTime fiveSecondsToLive = LocalDateTime.now().plusSeconds(5);
+        LocalDateTime fifteenSecondsToLive = LocalDateTime.now().plusSeconds(15);
+        LocalDateTime twelveSecondsOld = LocalDateTime.now().minusSeconds(12);
+        LocalDateTime twentySecondsOld = LocalDateTime.now().minusSeconds(20);
+        Message mockMessage1 = createMockMessage("message1", fiveSecondsToLive);
+        Message mockMessage2 = createMockMessage("message2", fifteenSecondsToLive);
+        Message mockMessage3 = createMockMessage("message3", twelveSecondsOld);
+        Message mockMessage4 = createMockMessage("message4", twentySecondsOld);
+        Log log = Log.builder().id(1L).build();
+        mockMessage1.setLog(log);
+        mockMessage2.setLog(log);
+        mockMessage3.setLog(log);
+        mockMessage4.setLog(log);
+        log.setMessages(new ArrayList<>(Arrays.asList(mockMessage1, mockMessage2, mockMessage3, mockMessage4)));
+        return log;
+    }
+
+    private Message createMockMessage(String testMessage, LocalDateTime time) {
+        Message message = createMockMessage(testMessage);
+        message.setCreatedAt(time);
+        return message;
     }
 }

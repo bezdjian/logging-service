@@ -33,7 +33,7 @@ public class LogController {
     })
     @GetMapping()
     public ResponseEntity<List<LogModel>> getAllLogs() {
-        return ResponseEntity.ok(logService.findAllLogs());
+        return ResponseEntity.ok(logService.findLatestLogs());
     }
 
     @ApiOperation(value = "Fetch a log with messages by id")

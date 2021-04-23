@@ -1,8 +1,10 @@
 package hb.loggingservice.service;
 
 import hb.loggingservice.TestUtil;
+import hb.loggingservice.entity.Configuration;
 import hb.loggingservice.entity.Log;
 import hb.loggingservice.model.LogModel;
+import hb.loggingservice.repository.ConfigurationRepository;
 import hb.loggingservice.repository.LogRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,18 +19,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 class LogServiceTest {
 
     private static final String TEST_MESSAGE = "test message";
+    private static final String CONFIG_MAX_AGE = "MAX_AGE";
     private static final Long LOG_ID = 1L;
 
     @InjectMocks
     private LogService logService;
     @Mock
     private LogRepository logRepository;
+    @Mock
+    private ConfigurationRepository configurationRepository;
 
     @BeforeEach
     void setUp() {
@@ -36,16 +42,43 @@ class LogServiceTest {
     }
 
     @Test
-    @DisplayName("Should find all logs with messages without max age value")
-    void shouldFindAllLogs() {
+    @DisplayName("Should find latest logs with messages without max age value")
+    void shouldFindLatestLogs() {
         //Given
+        when(configurationRepository.findConfigurationByName(CONFIG_MAX_AGE))
+            .thenReturn(Optional.empty());
         when(logRepository.findAll()).thenReturn(List.of(TestUtil.createMockLog(TEST_MESSAGE)));
         //When
-        List<LogModel> logs = logService.findAllLogs();
+        List<LogModel> logs = logService.findLatestLogs();
         //Then
         assertFalse(logs.isEmpty());
         assertFalse(logs.get(0).getMessages().isEmpty());
         assertEquals(TEST_MESSAGE, logs.get(0).getMessages().get(0).getMessage());
+        verify(configurationRepository).findConfigurationByName(CONFIG_MAX_AGE);
+    }
+
+    @Test
+    @DisplayName("Should find all logs with removed older messages")
+    void shouldFindAllLogsWithRemovedOlderMessages() {
+        //Given
+        final int maxAgeValue = 10;
+        when(configurationRepository.findConfigurationByName(CONFIG_MAX_AGE))
+            .thenReturn(Optional.of(Configuration.builder()
+                .name(CONFIG_MAX_AGE)
+                .value(maxAgeValue)
+                .build()));
+
+        List<Log> mockLogs = List.of(TestUtil.createMockLogWithFourMessages());
+
+        when(logRepository.findAll()).thenReturn(mockLogs);
+        //When
+        List<LogModel> logs = logService.findLatestLogs();
+        System.out.println(logs.get(0).getMessages().toString());
+        //Then
+        assertFalse(logs.isEmpty());
+        assertFalse(logs.get(0).getMessages().isEmpty());
+        assertEquals(2, logs.get(0).getMessages().size());
+        verify(configurationRepository).findConfigurationByName(CONFIG_MAX_AGE);
     }
 
     @Test
