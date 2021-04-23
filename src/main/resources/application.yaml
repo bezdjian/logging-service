@@ -18,3 +18,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
+cronjob:
+  removeOldMessages:
+    interval: 60000 # 1 minute by default
