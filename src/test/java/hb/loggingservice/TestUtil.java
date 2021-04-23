@@ -4,8 +4,8 @@ import hb.loggingservice.entity.Configuration;
 import hb.loggingservice.entity.Log;
 import hb.loggingservice.entity.Message;
 import hb.loggingservice.model.LogModel;
-import hb.loggingservice.model.MessageResponseModel;
 import hb.loggingservice.model.MessageRequestModel;
+import hb.loggingservice.model.MessageResponseModel;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
@@ -66,6 +66,21 @@ public class TestUtil {
         mockMessage4.setLog(log);
         log.setMessages(new ArrayList<>(Arrays.asList(mockMessage1, mockMessage2, mockMessage3, mockMessage4)));
         return log;
+    }
+
+    public LogModel createMockLogModel(Long id, String message) {
+        MessageResponseModel messageModel = createMockMessageModel(id, message);
+        return LogModel.builder()
+            .logId(id)
+            .messages(List.of(messageModel))
+            .build();
+    }
+
+    private MessageResponseModel createMockMessageModel(Long id, String message) {
+        return MessageResponseModel.builder()
+            .message(message)
+            .logId(id)
+            .build();
     }
 
     private Message createMockMessage(String testMessage, LocalDateTime time) {
