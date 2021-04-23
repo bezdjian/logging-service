@@ -40,6 +40,18 @@ public class LogService {
             .collect(Collectors.toList());
     }
 
+    /**
+     * Returns all the logs with their messages from the table
+     *
+     * @return List of LogModel mapped by Log entity
+     */
+    public List<LogModel> findAllLogs() {
+        return logRepository.findAll()
+            .stream()
+            .map(LogMapper::toLogModel)
+            .collect(Collectors.toList());
+    }
+
     public Optional<Log> findLogById(Long id) {
         return logRepository.findById(id);
     }

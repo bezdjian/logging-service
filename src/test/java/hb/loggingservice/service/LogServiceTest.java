@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
@@ -55,6 +56,20 @@ class LogServiceTest {
         assertFalse(logs.get(0).getMessages().isEmpty());
         assertEquals(TEST_MESSAGE, logs.get(0).getMessages().get(0).getMessage());
         verify(configurationRepository).findConfigurationByName(CONFIG_MAX_AGE);
+    }
+
+    @Test
+    @DisplayName("Should find all logs in the Log table")
+    void shouldFindAllLogs() {
+        //Given
+        when(logRepository.findAll()).thenReturn(List.of(TestUtil.createMockLog(TEST_MESSAGE)));
+        //When
+        List<LogModel> logs = logService.findAllLogs();
+        //Then
+        assertFalse(logs.isEmpty());
+        assertFalse(logs.get(0).getMessages().isEmpty());
+        assertEquals(TEST_MESSAGE, logs.get(0).getMessages().get(0).getMessage());
+        verifyNoInteractions(configurationRepository);
     }
 
     @Test
