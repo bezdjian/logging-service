@@ -1,5 +1,6 @@
 package hb.loggingservice;
 
+import hb.loggingservice.entity.Configuration;
 import hb.loggingservice.entity.Log;
 import hb.loggingservice.entity.Message;
 import hb.loggingservice.model.LogModel;
@@ -36,6 +37,14 @@ public class TestUtil {
             .message(testMessage)
             .name("test name")
             .createdAt(LocalDateTime.now())
+            .build();
+    }
+
+    public Configuration createMockConfiguration(String configName, int value) {
+        return Configuration.builder()
+            .name(configName)
+            .value(value)
+            .timestamp(LocalDateTime.now())
             .build();
     }
 }
