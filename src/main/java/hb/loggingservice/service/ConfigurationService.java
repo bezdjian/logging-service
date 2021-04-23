@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +34,10 @@ public class ConfigurationService {
             String errorMessage = String.format("Unable to save configuration %s", configurationName);
             throw new ConfigurationException(errorMessage, e);
         }
+    }
+
+    public List<Configuration> findAllConfigurations() {
+        return configurationRepository.findAll();
     }
 
     private void updateConfiguration(Configuration configuration, int value) {

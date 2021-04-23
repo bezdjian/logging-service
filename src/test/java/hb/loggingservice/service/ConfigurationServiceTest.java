@@ -13,10 +13,12 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -101,5 +103,20 @@ class ConfigurationServiceTest {
         assertThatThrownBy(() -> configurationService.saveConfiguration(configName, value))
             .isInstanceOf(ConfigurationException.class)
             .hasMessage(expectedExceptionMessage);
+    }
+
+    @Test
+    @DisplayName("Should find all configurations")
+    void shouldFindAllConfigurations() {
+        //Given
+        final String configName = "MAX_AGE";
+        final int maxAgeValue = 10;
+        when(configurationRepository.findAll())
+            .thenReturn(List.of(TestUtil.createMockConfiguration(configName, maxAgeValue)));
+        //When
+        List<Configuration> configurations = configurationService.findAllConfigurations();
+        //Then
+        assertFalse(configurations.isEmpty());
+        assertEquals(1, configurations.size());
     }
 }
