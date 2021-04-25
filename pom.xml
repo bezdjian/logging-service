@@ -17,6 +17,35 @@
     <java.version>15</java.version>
     <swagger.version>2.9.2</swagger.version>
   </properties>
+
+  <profiles>
+    <profile>
+      <id>integration-test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>2.22.2</version>
+            <configuration>
+              <includes>
+                <include>**/*IntegrationTests</include>
+              </includes>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -67,6 +96,9 @@
         <configuration>
           <parallel>methods</parallel>
           <useUnlimitedThreads>true</useUnlimitedThreads>
+          <excludes>
+            <exclude>**/*IntegrationTests</exclude>
+          </excludes>
         </configuration>
       </plugin>
     </plugins>
